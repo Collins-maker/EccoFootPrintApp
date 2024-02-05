@@ -1,9 +1,17 @@
 const express = require("express");
+// const RedisStore = require("connect-redis").default;
+// const { createClient } = require("redis");
+const sql = require("mssql");
+const config = require("./src/config/config");
+const userRoutes = require("./src/routes/userRoutes");
+
 const cors = require("cors");
-const bodyParser = require("body-parser");
-const mssql = require("mssql");
+
+require("dotenv").config();
 
 const app = express();
+
+app.use(express.json());
 const port = 3000;
 
 app.use(
@@ -13,68 +21,56 @@ app.use(
     optionSuccessStatus: 200,
   })
 );
-app.use(bodyParser.json());
 
-// Replace these with your actual MSSQL database credentials
-const dbConfig = {
-  user: "sa",
-  password: "Mtumishi",
-  server: "localhost",
-  database: "ecofootprintapp",
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-  },
-};
-
-// Initialize MSSQL connection pool
-mssql
-  .connect(dbConfig)
-  .then(() => {
-    console.log("Connected to MSSQL");
-  })
-  .catch((err) => console.error(err));
-
-// Define routes for CRUD operations
-app.get("/api/users", async (req, res) => {
+async function startApp() {
   try {
-    const result = await mssql.query`SELECT * FROM users.userProfile`;
-    res.json(result.recordset);
+    const pool = await sql.connect(config);
+    await pool.connect();
+    console.log("App connected to database");
+
+    app.use((req, res, next) => {
+      req.pool = pool;
+      next();
+    });
+
+    // const redisClient = createClient();
+    // redisClient.connect();
+    // console.log("connected to redis");
+
+    // const redisStore = new RedisStore({
+    //   client: redisClient,
+    //   prefix: "",
+    // });
+
+    // app.use(async (req, res, next) => {
+    //   let cookie = req.headers["cookie"];
+    //   console.log(cookie);
+    //   if (cookie && typeof cookie === "string") {
+    //     let sessionID = cookie.substring(16, 52);
+    //     let session = await redisClient.get(sessionID);
+
+    //     if (session) {
+    //       let real_session = JSON.parse(session);
+    //       next();
+    //     }
+    //   } else {
+    //     res.status(403).json({
+    //       success: false,
+    //       message: "login to proceed",
+    //     });
+    //   }
+    // });
+
+    app.use(userRoutes);
+
+    const port = process.env.PORT || 5001;
+    app.listen(port, () => {
+      console.log(`server is loading ${port}`);
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log("Error connecting to the database");
+    console.log(error);
   }
-});
+}
 
-app.post("/api/users", async (req, res) => {
-  const { userName, email, password } = req.body;
-  try {
-    const result = await mssql.query`
-      INSERT INTO users.userProfile (userName, email, password)
-      OUTPUT INSERTED.userName
-      VALUES (${userName}, ${email}, ${password})
-    `;
-
-    // Check if result.recordset is not undefined and has at least one element
-    if (result.recordset && result.recordset.length > 0) {
-      res.json({
-        success: true,
-        "registered User": result.recordset[0].userName,
-      });
-    } else {
-      res
-        .status(500)
-        .json({ error: "Internal Server Error: No records inserted" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// ... Implement update and delete routes similarly
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+startApp();

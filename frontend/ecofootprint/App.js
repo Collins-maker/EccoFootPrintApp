@@ -3,7 +3,7 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import CarbonFootprintInput from "./screens/carbonInput";
+import CarbonFootprintCalculator from "./screens/CarbonFootprintCalculator.js";
 import HomeScreen from "./screens/HomeScreen";
 
 const Stack = createStackNavigator();
@@ -21,7 +21,7 @@ const App = () => {
         {/* Other screens */}
         <Stack.Screen name="CarbonFootprintInput">
           {(props) => (
-            <CarbonFootprintInput {...props} onSubmit={handleSubmission} />
+            <CarbonFootprintCalculator {...props} onSubmit={handleSubmission} />
           )}
         </Stack.Screen>
       </Stack.Navigator>
