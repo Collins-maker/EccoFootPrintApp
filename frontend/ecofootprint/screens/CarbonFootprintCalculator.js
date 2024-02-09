@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 const CarbonFootprintCalculator = () => {
   const [selectedFactor, setSelectedFactor] = useState("");
   const [distance, setDistance] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [solarEnergyConsumption, setSolarEnergyConsumption] = useState("");
+  const [result, setResult] = useState(null);
+  const navigation = useNavigation();
+
   // Add state variables for other parameters as needed
 
   const calculateCarbonFootprint = async () => {
@@ -59,7 +63,8 @@ const CarbonFootprintCalculator = () => {
 
       // Here you can send the data to your backend or database
       // Use a function to send the data to your backend
-      sendDataToBackend(response.data);
+      // sendDataToBackend(response.data);
+      setResult(response.data);
     } catch (error) {
       console.error(error);
       Alert.alert(
@@ -147,15 +152,22 @@ const CarbonFootprintCalculator = () => {
           />
         </>
       )}
+      {/* Display results */}
+      {result && (
+        <View>
+          <Text>Results:</Text>
+          <Text>{JSON.stringify(result, null, 2)}</Text>
+        </View>
+      )}
 
       <Button
         title="Calculate Carbon Footprint"
         onPress={calculateCarbonFootprint}
       />
+
+      <Button title="View Tips" onPress={() => navigation.navigate("Tips")} />
     </View>
   );
 };
 
 export default CarbonFootprintCalculator;
-
-// export default CarbonFootprintInput;

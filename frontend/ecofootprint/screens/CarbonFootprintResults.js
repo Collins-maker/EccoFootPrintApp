@@ -1,4 +1,3 @@
-// CarbonFootprintResult.js
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50", // Green background color
     padding: 16,
     borderRadius: 8,
-    margin: 16,
+    marginVertical: 8, // Added space above and below the component
   },
   title: {
     fontSize: 20,
