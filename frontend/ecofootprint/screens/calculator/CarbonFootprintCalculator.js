@@ -46,7 +46,7 @@ const CarbonFootprintCalculator = ({ navigation }) => {
       setResult(response.data);
 
       // Send data to backend API
-      await axios.post("http://localhost:3000/carbonfootprint", {
+      await axios.post("http://localhost:4000/footprints/1", {
         selectedFactor,
         quantity,
         category,
@@ -55,9 +55,16 @@ const CarbonFootprintCalculator = ({ navigation }) => {
 
     } catch (error) {
       console.error(error);
+      let errorMessage = "Failed to calculate carbon footprint. Please try again.";
+    
+      // Check if error.message is available
+      if (error.message) {
+        errorMessage += " " + error.message; // Append the detailed error message
+      }
+    
       Alert.alert(
         "Error",
-        "Failed to calculate carbon footprint. Please try again."
+        errorMessage
       );
     }
   };

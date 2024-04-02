@@ -3,18 +3,26 @@ const config = require('../config/config');
 
 async function carbonFootprints(req, res) {
     try {
-        const userID = req.params.UserID;
+        const userID = req.params.UserID; // Get UserID from URL parameter
         const { selectedFactor, quantity, category, result } = req.body;
 
         // Connect to the database
-        await mssql.connect(config);
+        const pool = await mssql.connect(config);
 
-        // Insert data into the database
-        await mssql.query`INSERT INTO CarbonFootprints (UserID, SelectedFactor, Quantity, Category, Result) 
-                            VALUES (${userID}, ${selectedFactor}, ${quantity}, ${category}, ${result})`;
+        // Insert data into the database using parameterized query
+        const request = pool.request();
+        await request.input('userID', mssql.Int, userID)
+                     .input('selectedFactor', mssql.VarChar(255), selectedFactor)
+                     .input('quantity', mssql.VarChar(255), quantity)
+                     .input('category', mssql.VarChar(255), category)
+                     .input('result', mssql.VarChar(255), result)
+                     .query(`
+                         INSERT INTO users.CarbonFootprints (UserID, SelectedFactor, Quantity, Category, Results) 
+                         VALUES (@userID, @selectedFactor, @quantity, @category, @result)
+                     `);
 
         // Close the database connection
-        await mssql.close();
+        await pool.close();
 
         // Send response to the client
         res.status(200).json({ message: 'Data saved successfully.' });
@@ -23,5 +31,6 @@ async function carbonFootprints(req, res) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 
 module.exports = { carbonFootprints };
