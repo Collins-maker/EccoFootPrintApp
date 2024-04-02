@@ -7,7 +7,7 @@ async function getAllUsers(req, res) {
   let sql = await mssql.connect(config);
   if (sql.connected) {
     try {
-      const result = await mssql.query`SELECT * FROM users.userProfile`;
+      const result = await mssql.query`SELECT * FROM users.users`;
       res.json(result.recordset);
     } catch (error) {
       console.error(error);
