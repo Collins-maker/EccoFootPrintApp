@@ -27,8 +27,26 @@ async function carbonFootprints(req, res) {
                          VALUES (@userID, @selectedFactor, @quantity, @category, @result)
                      `);
 
+    // Fetching the results from the database
+    const results = await pool.request().input("userID", mssql.Int, userID)
+      .query(`
+    SELECT TOP 1 *
+    FROM users.CarbonFootprints
+    WHERE UserID = @userID
+    ORDER BY DateRecorded DESC;
+  `);
+
+    console.log("Database results:", results.recordset);
+
+    const footprintResult = results.recordset[0];
+
     const html = await markup("./src/views/footprints.ejs", {
       name: user.username,
+      selectedFactor: footprintResult.SelectedFactor,
+      quantity: footprintResult.Quantity,
+      category: footprintResult.Category,
+      result: footprintResult.Results,
+      totalresult: footprintResult.TotalResults,
 
       text: "We are so glad that you took a courageous step to calculate Your carbon footprints With us. Here are the results to make sure we keep you in truck and updated!",
     });

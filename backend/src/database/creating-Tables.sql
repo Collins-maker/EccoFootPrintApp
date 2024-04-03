@@ -19,6 +19,22 @@ VALUES
 	SELECT * FROM users.Users; 
 
 
+	---stored procedure:
+	CREATE OR ALTER PROCEDURE getUserByUsername
+    @username VARCHAR(30)
+AS
+BEGIN
+    SELECT *
+    FROM users.Users
+    WHERE username = @username;
+END;
+
+EXEC getUserByUsername @username = 'Mtumishi';
+
+
+
+
+
 
 --creatting Carbon footprints table
 

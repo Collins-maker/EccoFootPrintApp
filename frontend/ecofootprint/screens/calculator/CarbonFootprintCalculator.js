@@ -16,7 +16,7 @@ const CarbonFootprintCalculator = ({ navigation }) => {
     try {
       // Send data to backend API
       const response = await axios.post(
-        "http://172.16.55.57:4000/footprints/1",
+        "http://192.168.8.113:4000/footprints/1",
         {
           selectedFactor,
           quantity,
