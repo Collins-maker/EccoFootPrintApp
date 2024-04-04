@@ -41,9 +41,9 @@ async function registerUser(req, res) {
   }
 }
 
-async function getSessionDataFromRedis(sessionIdentifier) {
+async function getSessionDataFromRedis(sessionIdentifier, sessionStore) {
   return new Promise((resolve, reject) => {
-    req.sessionStore.get(sessionIdentifier, (err, session) => {
+    sessionStore.get(sessionIdentifier, (err, session) => {
       if (err) {
         reject(err);
       } else if (!session) {
@@ -112,35 +112,38 @@ async function loginUser(req, res) {
   }
 }
 
-async function restoreSession(req, res) {
-  const { sessionIdentifier } = req.params;
+// async function restoreSession(req, res) {
+//   const { sessionIdentifier } = req.params;
 
-  try {
-    // Retrieve session data based on session identifier from RedisStore
-    const sessionData = await getSessionDataFromRedis(sessionIdentifier);
+//   try {
+//     // Pass req.sessionStore to getSessionDataFromRedis
+//     const sessionData = await getSessionDataFromRedis(
+//       sessionIdentifier,
+//       req.sessionStore
+//     );
 
-    if (sessionData) {
-      // If session data is found, return the user data
-      return res.json({
-        success: true,
-        message: "Session restored successfully",
-        user: sessionData.user,
-      });
-    } else {
-      // If session data is not found or expired, return an error
-      return res.status(404).json({
-        success: false,
-        message: "Session not found or expired",
-      });
-    }
-  } catch (error) {
-    console.error("Error restoring session:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-}
+//     if (sessionData) {
+//       // If session data is found, return the user data
+//       return res.json({
+//         success: true,
+//         message: "Session restored successfully",
+//         user: sessionData.user,
+//       });
+//     } else {
+//       // If session data is not found or expired, return an error
+//       return res.status(404).json({
+//         success: false,
+//         message: "Session not found or expired",
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Error restoring session:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// }
 
 async function getAllUsers(req, res) {
   let sql = await mssql.connect(config);
@@ -155,4 +158,4 @@ async function getAllUsers(req, res) {
   }
 }
 
-module.exports = { registerUser, loginUser, getAllUsers, restoreSession };
+module.exports = { registerUser, loginUser, getAllUsers };

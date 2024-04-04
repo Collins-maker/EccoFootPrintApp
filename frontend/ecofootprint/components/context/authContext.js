@@ -42,25 +42,25 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   // Attempt to restore the user session when the component mounts
-  useEffect(() => {
-    const restoreSession = async () => {
-      try {
-        const sessionIdentifier = await AsyncStorage.getItem(
-          "sessionIdentifier"
-        );
-        if (sessionIdentifier) {
-          const response = await axios.get(
-            `http://172.16.55.57:4000/restore-session/${sessionIdentifier}`
-          );
-          setCurrentUser(response.data.user);
-        }
-      } catch (error) {
-        console.log("Error restoring session:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const restoreSession = async () => {
+  //     try {
+  //       const sessionIdentifier = await AsyncStorage.getItem(
+  //         "sessionIdentifier"
+  //       );
+  //       if (sessionIdentifier) {
+  //         const response = await axios.get(
+  //           `http://172.16.55.57:4000/restore-session/${sessionIdentifier}`
+  //         );
+  //         setCurrentUser(response.data.user);
+  //       }
+  //     } catch (error) {
+  //       console.log("Error restoring session:", error);
+  //     }
+  //   };
 
-    restoreSession();
-  }, []);
+  //   restoreSession();
+  // }, []);
 
   // Memoize the value provided to AuthContext using useMemo
   const authContextValue = useMemo(

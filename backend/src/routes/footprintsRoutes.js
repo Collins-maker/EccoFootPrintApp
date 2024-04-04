@@ -1,8 +1,8 @@
-const express = require('express');
-const { carbonFootprints } = require('../controllers/carbonFootprints');
+const express = require("express");
+const { carbonFootprints } = require("../controllers/carbonFootprints");
 
 const footprintRoutes = express.Router();
 
-footprintRoutes.post('/footprints/:UserID', carbonFootprints);
+footprintRoutes.post("/footprints", carbonFootprints);
 
 module.exports = footprintRoutes;

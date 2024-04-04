@@ -9,7 +9,9 @@ async function carbonFootprints(req, res) {
 
   console.log("checking the user", user);
   try {
-    const userID = req.params.UserID; // Get UserID from URL parameter
+    // Get UserID from the session
+    const userID = user.id;
+
     const { selectedFactor, quantity, category, result } = req.body;
 
     // Connect to the database
@@ -24,7 +26,7 @@ async function carbonFootprints(req, res) {
       .input("category", category)
       .input("result", result).query(`
                          INSERT INTO users.CarbonFootprints (UserID, SelectedFactor, Quantity, Category, Results) 
-                         VALUES (@userID, @selectedFactor, @quantity, @category, @result)
+                         VALUES (@UserID, @selectedFactor, @quantity, @category, @result)
                      `);
 
     // Fetching the results from the database
@@ -66,19 +68,14 @@ async function carbonFootprints(req, res) {
 
     await sendMail(message_options);
 
-    return res.status(201).json({
-      success: true,
-
-      message: "Carbon Fottprints successfully keyed in",
-
-      // data: results.recordset,
-    });
-
     // Close the database connection
     await pool.close();
 
-    // Send response to the client
-    res.status(200).json({ message: "Data saved successfully." });
+    return res.status(201).json({
+      success: true,
+      message: "Carbon Footprints successfully keyed in",
+      // data: results.recordset,
+    });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });

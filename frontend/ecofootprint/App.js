@@ -7,6 +7,7 @@ import TipsScreen from "./screens/TipsScreen.js";
 import Signup from "./screens/Signup";
 import Login from "./screens/Login.js";
 import { AuthContextProvider } from "./components/context/authContext.js";
+import OnboardingScreen from "./screens/OnboardingScreen.js";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,7 @@ const App = () => {
               />
             )}
           </Stack.Screen>
+          <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
           <Stack.Screen name="Tips" component={TipsScreen} />
         </Stack.Navigator>
       </NavigationContainer>

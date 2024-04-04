@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 try {
 } catch (error) {}
@@ -14,9 +15,16 @@ const CarbonFootprintCalculator = ({ navigation }) => {
 
   const saveData = async () => {
     try {
-      // Send data to backend API
+      // Retrieve session identifier from AsyncStorage
+      const sessionIdentifier = await AsyncStorage.getItem("sessionIdentifier");
+      // Retrieve UserID from session
+      const userID = user?.UserID; // Assuming user is the session object
+      if (!userID) {
+        throw new Error("UserID not found in session.");
+      }
+      // Send data to backend API along with the session identifier
       const response = await axios.post(
-        "http://172.16.58.198:4000/footprints/1",
+        "http://172.16.55.157:4000/footprints/${UserID}",
         {
           selectedFactor,
           quantity,
@@ -24,7 +32,9 @@ const CarbonFootprintCalculator = ({ navigation }) => {
           result,
         },
         {
-          withCredentials: true,
+          headers: {
+            "Session-Identifier": sessionIdentifier, // Send session identifier in header
+          },
         }
       );
       console.log("Data saved successfully:", response.data);
@@ -203,7 +213,7 @@ const CarbonFootprintCalculator = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <Button
           title="Back"
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("OnboardingScreen")}
           color="#FFD700"
         />
 
