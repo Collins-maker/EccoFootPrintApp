@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#4CAF50",
   },
   heading: {
     fontWeight: "bold",
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     color: "red",
   },
   button: {
-    backgroundColor: "rgb(103, 202, 248)",
+    backgroundColor: "#FFD700",
     borderRadius: 5,
     padding: 10,
     width: "80%",

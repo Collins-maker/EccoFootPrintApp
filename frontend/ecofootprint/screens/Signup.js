@@ -27,7 +27,7 @@ const Signup = () => {
     if (password !== confirmPassword) {
       alert("Passwords do not match");
     } else {
-      axios.post("http://192.168.100.2:4000/register", values).then((res) => {
+      axios.post("http://172.16.55.57:4000/register", values).then((res) => {
         navigation.navigate("Login");
       });
     }
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#4CAF50",
   },
   heading: {
     fontWeight: "bold",
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     color: "red",
   },
   button: {
-    backgroundColor: "rgb(103, 202, 248)",
+    backgroundColor: "#FFD700",
     borderRadius: 5,
     padding: 10,
     width: "80%",

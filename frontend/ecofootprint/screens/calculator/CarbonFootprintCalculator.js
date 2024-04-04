@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "green", // Set background color to green
+    backgroundColor: "#4CAF50", // Set background color to green
   },
   inputContainer: {
     flexDirection: "row",

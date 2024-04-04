@@ -3,6 +3,7 @@ const mssql = require("mssql");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
+const { v4: uuidv4 } = require("uuid");
 
 async function registerUser(req, res) {
   let user = req.body;
@@ -40,6 +41,21 @@ async function registerUser(req, res) {
   }
 }
 
+async function getSessionDataFromRedis(sessionIdentifier) {
+  return new Promise((resolve, reject) => {
+    req.sessionStore.get(sessionIdentifier, (err, session) => {
+      if (err) {
+        reject(err);
+      } else if (!session) {
+        // Session not found or expired
+        resolve(null);
+      } else {
+        resolve(session);
+      }
+    });
+  });
+}
+
 async function loginUser(req, res) {
   if (req.session.user) {
     // User is already logged in; return user data
@@ -47,8 +63,10 @@ async function loginUser(req, res) {
       success: true,
       message: "User already logged in",
       user: req.session.user,
+      sessionIdentifier: req.sessionID,
     });
   }
+
   let { username, password } = req.body;
 
   try {
@@ -59,22 +77,20 @@ async function loginUser(req, res) {
       .input("username", username)
       .execute("getUserByUsername");
     let user = results.recordset[0];
-    console.log("find", user);
-    console.log("Password from database:", user.password);
 
-    console.log("This is the password :", password);
     if (user) {
       let passwords_match = await bcrypt.compare(password, user.password);
-      console.log("password comparison result: ", passwords_match);
       if (passwords_match) {
-        // Store user data in the session
+        // Generate session identifier
+        const sessionIdentifier = uuidv4();
+
+        // Store user data and session identifier in the session
         req.session.user = {
           id: user.UserID,
           username: user.username,
           email_address: user.email,
         };
-        console.log("user", req.session.user);
-        // console.log("Session", req.session);
+        req.session.sessionIdentifier = sessionIdentifier;
 
         req.session.authorized = true;
 
@@ -82,6 +98,7 @@ async function loginUser(req, res) {
           success: true,
           message: "Logged in successfully",
           user: user,
+          sessionIdentifier: sessionIdentifier,
         });
       } else {
         res.status(401).json({ success: false, message: "Wrong password" });
@@ -90,8 +107,38 @@ async function loginUser(req, res) {
       res.status(404).json({ success: false, message: "No user found" });
     }
   } catch (error) {
-    console.log(error);
+    console.error("Error logging in:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
+  }
+}
+
+async function restoreSession(req, res) {
+  const { sessionIdentifier } = req.params;
+
+  try {
+    // Retrieve session data based on session identifier from RedisStore
+    const sessionData = await getSessionDataFromRedis(sessionIdentifier);
+
+    if (sessionData) {
+      // If session data is found, return the user data
+      return res.json({
+        success: true,
+        message: "Session restored successfully",
+        user: sessionData.user,
+      });
+    } else {
+      // If session data is not found or expired, return an error
+      return res.status(404).json({
+        success: false,
+        message: "Session not found or expired",
+      });
+    }
+  } catch (error) {
+    console.error("Error restoring session:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 }
 
@@ -108,4 +155,4 @@ async function getAllUsers(req, res) {
   }
 }
 
-module.exports = { registerUser, loginUser, getAllUsers };
+module.exports = { registerUser, loginUser, getAllUsers, restoreSession };
