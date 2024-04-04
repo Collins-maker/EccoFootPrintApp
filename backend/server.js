@@ -7,7 +7,7 @@ const mssql = require("mssql");
 const config = require("./src/config/config");
 const RedisStore = require("connect-redis").default;
 const { createClient } = require("redis");
-const userRoutes = require("./src/routes/userRoutes");
+const authenticationRoutes = require("./src/routes/authenticationRoutes");
 const footprintRoutes = require("./src/routes/footprintsRoutes");
 const cors = require("cors");
 
@@ -68,7 +68,7 @@ async function startApp() {
       res.send("Logout successfully");
     });
 
-    app.use(userRoutes);
+    app.use(authenticationRoutes);
     app.use(footprintRoutes);
 
     const port = process.env.PORT || 5001;

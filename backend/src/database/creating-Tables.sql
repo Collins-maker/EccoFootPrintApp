@@ -2,13 +2,15 @@ CREATE SCHEMA users;
 
 CREATE TABLE users.Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
-    Username VARCHAR(50) UNIQUE,
-    Email VARCHAR(100) UNIQUE,
-    Password VARCHAR(255) NOT NULL,
-    RegistrationDate DATETIME NOT NULL DEFAULT GETDATE(),
-    LastLogin DATETIME,
+    username VARCHAR(50) UNIQUE,
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    registrationDate DATETIME NOT NULL DEFAULT GETDATE(),
+    lastLogin DATETIME,
     -- Add more fields as needed
 );
+
+DROP TABLE users.users;
 
 --populating some values on the users table:
 INSERT INTO users.Users (Username, Email, Password)
@@ -16,7 +18,7 @@ VALUES
     ('Mtumishi', 'mtumishicollins@gmail.com', '1234');
 
 	--checking values:
-	SELECT * FROM users.Users; 
+	SELECT * FROM users.users; 
 
 
 	---stored procedure:
