@@ -11,7 +11,7 @@ export const AuthContextProvider = ({ children }) => {
   // The login function is responsible for handling the login API call
   const login = async (inputs) => {
     try {
-      const res = await axios.post("http://172.16.55.57:4000/login", inputs, {
+      const res = await axios.post("http://192.168.8.113:4000/login", inputs, {
         withCredentials: true,
       });
 
@@ -50,7 +50,7 @@ export const AuthContextProvider = ({ children }) => {
   //       );
   //       if (sessionIdentifier) {
   //         const response = await axios.get(
-  //           `http://172.16.55.57:4000/restore-session/${sessionIdentifier}`
+  //           `http://192.168.8.113:4000/restore-session/${sessionIdentifier}`
   //         );
   //         setCurrentUser(response.data.user);
   //       }

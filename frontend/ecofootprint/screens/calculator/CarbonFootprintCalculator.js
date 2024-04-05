@@ -17,6 +17,21 @@ const CarbonFootprintCalculator = ({ navigation }) => {
     try {
       // Retrieve session identifier from AsyncStorage
       const sessionIdentifier = await AsyncStorage.getItem("sessionIdentifier");
+      console.log("This is the session identifier: ", sessionIdentifier);
+
+      // Send request to backend to get user information using the session identifier
+      const response1 = await axios.get(
+        "http://192.168.8.113:4000/users", // Assuming there's an endpoint to get user info
+        {
+          headers: {
+            "Session-Identifier": sessionIdentifier, // Send session identifier in header
+          },
+        }
+      );
+
+      const user = response1.data[0];
+
+      console.log("This is the user ", user);
       // Retrieve UserID from session
       const userID = user?.UserID; // Assuming user is the session object
       if (!userID) {
@@ -24,12 +39,13 @@ const CarbonFootprintCalculator = ({ navigation }) => {
       }
       // Send data to backend API along with the session identifier
       const response = await axios.post(
-        "http://172.16.55.157:4000/footprints/${UserID}",
+        "http://192.168.8.113:4000/footprints",
         {
           selectedFactor,
           quantity,
           category,
           result,
+          UserID: userID, // Include UserID in the body
         },
         {
           headers: {
