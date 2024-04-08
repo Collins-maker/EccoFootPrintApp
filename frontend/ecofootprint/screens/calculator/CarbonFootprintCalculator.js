@@ -16,22 +16,6 @@ const CarbonFootprintCalculator = ({ navigation }) => {
       const token = await AsyncStorage.getItem("token");
       console.log("This is the JWT token:", token);
 
-      // Send request to backend to get user information using the session identifier
-      // const response1 = await axios.get("http://192.168.8.113:4000/users", {
-      //   headers: {
-      //     "Session-Identifier": sessionIdentifier, // Send session identifier in header
-      //   },
-      // });
-
-      // const user = response1.data[0];
-
-      // console.log("This is the user ", user);
-      // // Retrieve UserID from session
-      // const userID = user?.UserID; // Assuming user is the session object
-      // if (!userID) {
-      //   throw new Error("UserID not found in session.");
-      // }
-
       // Send data to backend API along with the session identifier
       const response = await axios.post(
         "http://192.168.8.113:4000/footprints",
@@ -98,6 +82,22 @@ const CarbonFootprintCalculator = ({ navigation }) => {
 
       if (carbonEquivalent !== undefined) {
         setResult(carbonEquivalent);
+        resultMessage = `Your footprint is ${carbonEquivalent}.`; // Assign value to resultMessage here
+
+        // Display result message on screen
+        // Alert.alert("Carbon Footprint", resultMessage);
+
+        // Display additional information
+        Alert.alert(
+          "Success!",
+          `${resultMessage}\n\n
+          The average footprint for people in Kenya is 360 kgs in a year.\n
+      The average worldwide carbon footprint is about 4790 kgs in a year.\n
+      You can calculate more factors to check your average...\n
+      Vision 2030 is to have the average of 100kgs in a year.\n 
+    
+      Check out the tips on how to reduce it.`
+        );
       } else if (numberOfTrees !== undefined) {
         setResult(numberOfTrees);
       } else {
@@ -212,7 +212,7 @@ const CarbonFootprintCalculator = ({ navigation }) => {
 
       {result && (
         <View style={styles.resultContainer}>
-          <Text style={styles.resultLabel}>CO2 Emission in kgs:</Text>
+          <Text style={styles.resultLabel}>Your CO2 Emission in kgs:</Text>
           <Text style={styles.resultText}>
             {result.carbonEquivalent ?? result.numberOfTrees}
             {result}
