@@ -42,7 +42,7 @@ const Login = () => {
         // Navigation logic for successful login after 5 seconds
         setTimeout(() => {
           navigation.navigate("OnboardingScreen");
-        }, 5000);
+        }, 2000);
       } else {
         console.log("Login failed. Invalid credentials.");
         setErr("Invalid credentials.");

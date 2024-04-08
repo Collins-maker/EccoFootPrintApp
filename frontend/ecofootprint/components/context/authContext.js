@@ -15,18 +15,13 @@ export const AuthContextProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      // Check if the session identifier is present in the response
-      if (res.data && res.data.sessionIdentifier) {
-        setCurrentUser(res.data.user);
+      // Check if the session identifier and token are present in the response
+      if (res.data && res.data.sessionIdentifier && res.data.token) {
+        // Store the token in AsyncStorage
+        await AsyncStorage.setItem("token", res.data.token);
 
-        // Save session identifier in AsyncStorage
-        await AsyncStorage.setItem(
-          "sessionIdentifier",
-          res.data.sessionIdentifier
-        );
-
-        // Return the login result
-        return { success: true }; // or any other data you want to return upon successful login
+        // Return the login result along with the token
+        return { success: true, token: res.data.token };
       } else {
         console.log("Response data:", res.data);
         throw new Error("Invalid response data");
@@ -50,7 +45,7 @@ export const AuthContextProvider = ({ children }) => {
   //       );
   //       if (sessionIdentifier) {
   //         const response = await axios.get(
-  //           `http://192.168.8.113:4000/restore-session/${sessionIdentifier}`
+  //           `http://192.168.100.237:4000/restore-session/${sessionIdentifier}`
   //         );
   //         setCurrentUser(response.data.user);
   //       }

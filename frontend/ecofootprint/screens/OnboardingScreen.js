@@ -22,7 +22,7 @@ const OnboardingScreen = ({ navigation }) => {
         setContent((prevContent) => [...prevContent, onboardingContent[index]]);
         setIndex((prevIndex) => prevIndex + 1);
       }
-    }, 3000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [index]);

@@ -4,6 +4,7 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const { v4: uuidv4 } = require("uuid");
+const jwt = require("jsonwebtoken");
 
 async function registerUser(req, res) {
   let user = req.body;
@@ -81,8 +82,14 @@ async function loginUser(req, res) {
     if (user) {
       let passwords_match = await bcrypt.compare(password, user.password);
       if (passwords_match) {
-        // Generate session identifier
-        const sessionIdentifier = uuidv4();
+        // Generate JWT token
+        const token = jwt.sign(
+          { userId: user.UserID, username: user.username },
+          process.env.SECRET,
+          { expiresIn: "1h" }
+        );
+
+        console.log("this is the generated token :", token);
 
         // Store user data and session identifier in the session
         req.session.user = {
@@ -90,16 +97,40 @@ async function loginUser(req, res) {
           username: user.username,
           email_address: user.email,
         };
+
+        // Set UserID in the session
+        req.session.userID = user.UserID;
+
+        console.log("UserID set in the sesssion is: ", req.session.userID);
+
+        // Generate session identifier
+        const sessionIdentifier = uuidv4();
         req.session.sessionIdentifier = sessionIdentifier;
 
         req.session.authorized = true;
 
+        console.log("you have logged in as :", username);
+
+        console.log("username from session is:", user.username);
+        console.log("id from session is:", user.UserID);
+        console.log("email_address from session is:", user.email);
+
+        console.log("session Identifier is :", req.session.sessionIdentifier);
+
+        console.log("this is the logged in user: ", user);
+
+        console.log("session identifier check again: ", sessionIdentifier);
+
+        //send JWT token to the client
         res.json({
           success: true,
           message: "Logged in successfully",
           user: user,
           sessionIdentifier: sessionIdentifier,
+          token: token,
         });
+
+        console.log("this is res.json: ", res.json);
       } else {
         res.status(401).json({ success: false, message: "Wrong password" });
       }

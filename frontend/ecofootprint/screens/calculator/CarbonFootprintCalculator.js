@@ -4,9 +4,6 @@ import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-try {
-} catch (error) {}
-
 const CarbonFootprintCalculator = ({ navigation }) => {
   const [selectedFactor, setSelectedFactor] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -16,27 +13,25 @@ const CarbonFootprintCalculator = ({ navigation }) => {
   const saveData = async () => {
     try {
       // Retrieve session identifier from AsyncStorage
-      const sessionIdentifier = await AsyncStorage.getItem("sessionIdentifier");
-      console.log("This is the session identifier: ", sessionIdentifier);
+      const token = await AsyncStorage.getItem("token");
+      console.log("This is the JWT token:", token);
 
       // Send request to backend to get user information using the session identifier
-      const response1 = await axios.get(
-        "http://192.168.8.113:4000/users", // Assuming there's an endpoint to get user info
-        {
-          headers: {
-            "Session-Identifier": sessionIdentifier, // Send session identifier in header
-          },
-        }
-      );
+      // const response1 = await axios.get("http://192.168.8.113:4000/users", {
+      //   headers: {
+      //     "Session-Identifier": sessionIdentifier, // Send session identifier in header
+      //   },
+      // });
 
-      const user = response1.data[0];
+      // const user = response1.data[0];
 
-      console.log("This is the user ", user);
-      // Retrieve UserID from session
-      const userID = user?.UserID; // Assuming user is the session object
-      if (!userID) {
-        throw new Error("UserID not found in session.");
-      }
+      // console.log("This is the user ", user);
+      // // Retrieve UserID from session
+      // const userID = user?.UserID; // Assuming user is the session object
+      // if (!userID) {
+      //   throw new Error("UserID not found in session.");
+      // }
+
       // Send data to backend API along with the session identifier
       const response = await axios.post(
         "http://192.168.8.113:4000/footprints",
@@ -45,11 +40,10 @@ const CarbonFootprintCalculator = ({ navigation }) => {
           quantity,
           category,
           result,
-          UserID: userID, // Include UserID in the body
         },
         {
           headers: {
-            "Session-Identifier": sessionIdentifier, // Send session identifier in header
+            Authorization: `Bearer ${token}`, // Include JWT token in the Authorization header
           },
         }
       );
@@ -218,9 +212,10 @@ const CarbonFootprintCalculator = ({ navigation }) => {
 
       {result && (
         <View style={styles.resultContainer}>
-          <Text style={styles.resultLabel}>Results:</Text>
+          <Text style={styles.resultLabel}>CO2 Emission in kgs:</Text>
           <Text style={styles.resultText}>
-            {result.carbonEquivalent ?? result.numberOfTrees}{" "}
+            {result.carbonEquivalent ?? result.numberOfTrees}
+            {result}
             {result.carbonEquivalent_unit ?? result.numberOfTrees_unit}
           </Text>
         </View>
@@ -255,6 +250,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    marginTop: 30,
     backgroundColor: "#4CAF50", // Set background color to green
   },
   inputContainer: {
@@ -264,14 +260,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   label: {
-    fontSize: 16,
+    marginTop: 20,
+    fontSize: 20,
     marginBottom: 10,
     height: 20,
     maxWidth: "80%",
     padding: 0,
   },
   textInput: {
-    flex: 1,
+    height: 60,
     marginRight: 10,
     borderWidth: 1,
     borderColor: "gray",

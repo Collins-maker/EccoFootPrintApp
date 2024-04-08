@@ -27,7 +27,7 @@ const Signup = () => {
     if (password !== confirmPassword) {
       alert("Passwords do not match");
     } else {
-      axios.post("http://172.16.55.57:4000/register", values).then((res) => {
+      axios.post("http://192.168.8.113:4000/register", values).then((res) => {
         navigation.navigate("Login");
       });
     }

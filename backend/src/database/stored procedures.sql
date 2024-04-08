@@ -34,4 +34,18 @@ EXEC insertUser
 
 	SELECT * FROM users.Users
 
+	CREATE OR ALTER PROCEDURE users.InsertGoal
+    @UserID INT,
+    @Fuel INT,
+    @CleanEnergy INT,
+    @BooksAndCellulosePapers INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO users.Goals (UserID, Fuel, CleanEnergy, BooksAndCellulosePapers)
+    VALUES (@UserID, @Fuel, @CleanEnergy, @BooksAndCellulosePapers);
+END;
+
+
 

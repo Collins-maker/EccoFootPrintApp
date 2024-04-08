@@ -12,7 +12,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to EcoFootprint App</Text>
+      <Text style={styles.title}>Welcome to EcoFootprint</Text>
       <Text style={styles.quote}>
         "Let's take care of our common home by monitoring and reducing our
         carbon emissions."

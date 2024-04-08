@@ -71,19 +71,24 @@ VALUES
 CREATE TABLE users.Goals (
     GoalID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
-    GoalDescription VARCHAR(255) NOT NULL,
-    TargetDate DATE,
-    Progress DECIMAL(5, 2),
+    Fuel INT NOT NULL,
+    CleanEnergy INT NOT NULL,
+    BooksAndCellulosePapers INT NOT NULL,
+    GoalDate DATETIME NOT NULL DEFAULT GETDATE(),
+    
     CONSTRAINT FK_UserID FOREIGN KEY (UserID) REFERENCES users.Users(UserID)
 );
 
+
+Select * from users.Goals
+
+DROP TABLE users.Goals
 --education
 CREATE TABLE users.Education (
     ArticleID INT IDENTITY(1,1) PRIMARY KEY,
     Title VARCHAR(255) NOT NULL,
     Content TEXT NOT NULL,
-    DatePublished DATETIME NOT NULL DEFAULT GETDATE()
-);
+    DatePublished DATETIME NOT NULL DEFAULT GETDATE();
 
 --email Queue
 
