@@ -74,7 +74,10 @@ const GoalsScreen = () => {
       // You can perform additional actions after successful save if needed
 
       // Display success message to the user
-      Alert.alert("Success", "Goals saved successfully.");
+      Alert.alert(
+        "Success!",
+        "We have saved Your goals successfully.\n check on Your Email so see all your results and goals that you have just set!"
+      );
     } catch (error) {
       console.error("Failed to save goals:", error);
       Alert.alert("Error", "Failed to save goals. Please try again.");

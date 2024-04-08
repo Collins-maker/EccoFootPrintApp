@@ -95,8 +95,10 @@ const CarbonFootprintCalculator = ({ navigation }) => {
       The average worldwide carbon footprint is about 4790 kgs in a year.\n
       You can calculate more factors to check your average...\n
       Vision 2030 is to have the average of 100kgs in a year.\n 
+
+      Press save button , to save the results and then:\n
     
-      Check out the tips on how to reduce it.`
+      Press View Tips button Check out the tips on how to reduce it.`
         );
       } else if (numberOfTrees !== undefined) {
         setResult(numberOfTrees);
