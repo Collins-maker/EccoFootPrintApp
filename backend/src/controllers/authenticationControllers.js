@@ -143,39 +143,6 @@ async function loginUser(req, res) {
   }
 }
 
-// async function restoreSession(req, res) {
-//   const { sessionIdentifier } = req.params;
-
-//   try {
-//     // Pass req.sessionStore to getSessionDataFromRedis
-//     const sessionData = await getSessionDataFromRedis(
-//       sessionIdentifier,
-//       req.sessionStore
-//     );
-
-//     if (sessionData) {
-//       // If session data is found, return the user data
-//       return res.json({
-//         success: true,
-//         message: "Session restored successfully",
-//         user: sessionData.user,
-//       });
-//     } else {
-//       // If session data is not found or expired, return an error
-//       return res.status(404).json({
-//         success: false,
-//         message: "Session not found or expired",
-//       });
-//     }
-//   } catch (error) {
-//     console.error("Error restoring session:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// }
-
 async function getAllUsers(req, res) {
   let sql = await mssql.connect(config);
   if (sql.connected) {

@@ -48,4 +48,4 @@ BEGIN
 END;
 
 
-
+select * from users.Goals

@@ -73,7 +73,7 @@ const CarbonFootprintCalculator = ({ navigation }) => {
         params,
         headers: {
           "X-RapidAPI-Key":
-            "eef4dab6ffmshbf2bea8fe818895p12ce52jsnec20f99cdd5d",
+            "d22ec07910msh9c783fb66a488edp18e106jsn845ecc7cf8a4",
           "X-RapidAPI-Host": "carbonfootprint1.p.rapidapi.com",
         },
       });
